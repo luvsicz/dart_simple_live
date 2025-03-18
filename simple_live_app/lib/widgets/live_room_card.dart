@@ -8,16 +8,23 @@ import 'package:simple_live_app/widgets/net_image.dart';
 import 'package:simple_live_app/widgets/shadow_card.dart';
 import 'package:simple_live_core/simple_live_core.dart';
 
-class LiveRoomCard extends StatelessWidget {
+class LiveRoomCard extends StatefulWidget {
   final Site site;
   final LiveRoomItem item;
   const LiveRoomCard(this.site, this.item, {Key? key}) : super(key: key);
 
   @override
+  _LiveRoomCardState createState() => _LiveRoomCardState();
+}
+
+class _LiveRoomCardState extends State<LiveRoomCard> {
+  String? liveFrameUrl;
+
+  @override
   Widget build(BuildContext context) {
     return ShadowCard(
       onTap: () {
-        AppNavigator.toLiveRoomDetail(site: site, roomId: item.roomId);
+        AppNavigator.toLiveRoomDetail(site: widget.site, roomId: widget.item.roomId);
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,10 +37,11 @@ class LiveRoomCard extends StatelessWidget {
                   topRight: Radius.circular(8),
                 ),
                 child: NetImage(
-                  item.cover,
+                  liveFrameUrl ?? widget.item.cover,
                   fit: BoxFit.cover,
                   height: 110,
                   width: double.infinity,
+                  onImageLoaded: fetchLiveFrame,
                 ),
               ),
               Positioned(
@@ -65,7 +73,7 @@ class LiveRoomCard extends StatelessWidget {
                       ),
                       AppStyle.hGap4,
                       Text(
-                        Utils.onlineToString(item.online),
+                        Utils.onlineToString(widget.item.online),
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.white,
@@ -80,7 +88,7 @@ class LiveRoomCard extends StatelessWidget {
           Padding(
             padding: AppStyle.edgeInsetsA8.copyWith(bottom: 4),
             child: Text(
-              item.title,
+              widget.item.title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -88,7 +96,7 @@ class LiveRoomCard extends StatelessWidget {
           Padding(
             padding: AppStyle.edgeInsetsH8.copyWith(bottom: 8),
             child: Text(
-              item.userName,
+              widget.item.userName,
               maxLines: 1,
               style: const TextStyle(
                   height: 1.4, fontSize: 12, color: Colors.grey),
@@ -97,5 +105,17 @@ class LiveRoomCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void fetchLiveFrame() async {
+    try {
+      // Simulate fetching live frame URL
+      await Future.delayed(Duration(seconds: 2));
+      setState(() {
+        liveFrameUrl = 'https://example.com/live_frame.jpg';
+      });
+    } catch (e) {
+      // Handle error
+    }
   }
 }

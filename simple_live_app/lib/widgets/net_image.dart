@@ -7,11 +7,14 @@ class NetImage extends StatelessWidget {
   final double? height;
   final BoxFit? fit;
   final double borderRadius;
+  final Function()? onImageLoaded;
+
   const NetImage(this.picUrl,
       {this.width,
       this.height,
       this.fit = BoxFit.cover,
       this.borderRadius = 0,
+      this.onImageLoaded,
       Key? key})
       : super(key: key);
 
@@ -51,6 +54,11 @@ class NetImage extends StatelessWidget {
               color: Colors.grey,
               size: 24,
             );
+          }
+          if (e.extendedImageLoadState == LoadState.completed) {
+            if (onImageLoaded != null) {
+              onImageLoaded!();
+            }
           }
           return null;
         },
